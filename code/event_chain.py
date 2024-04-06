@@ -18,6 +18,7 @@ class EventChain(nn.Module):
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.embedding.weight.data = torch.from_numpy(word_vec)
         # self.embedding.weight.requires_grad=False
+        # GRU LSTM RNN
         self.gru = nn.GRU(self.embedding_dim, self.hidden_dim,self.num_layers,dropout=DROPOUT,bidirectional=self.bidirectional)
         self.linear_s_one=nn.Linear(hidden_dim*self.num_directions, 1,bias=False)
         self.linear_s_two=nn.Linear(hidden_dim*self.num_directions, 1,bias=True)
@@ -135,10 +136,10 @@ def train():
             data=dev_data.all_data()
             accuracy,accuracy1,accuracy2,accuracy3,accuracy4,scores2=model.predict_with_minibatch(data[1],data[2])
             # if (EPOCHES*EPO+epoch) % 50==0:
-            print ('Epoch %d : Eval  Acc: %f, %f, %f, %f, %f' % (EPOCHES*EPO+epoch,accuracy.data[0],accuracy1.data[0],accuracy2.data[0],accuracy3.data[0],accuracy4.data[0]))
-            acc_list.append((time.time()-start,accuracy.data[0]))
-            if best_acc<accuracy.data[0]:
-                best_acc=accuracy.data[0]
+            print ('Epoch %d : Eval  Acc: %f, %f, %f, %f, %f' % (EPOCHES*EPO+epoch,accuracy.item(),accuracy1.item(),accuracy2.item(),accuracy3.item(),accuracy4.item()))
+            acc_list.append((time.time()-start,accuracy.item()))
+            if best_acc<accuracy.item():
+                best_acc=accuracy.item()
                 if best_acc>=51:
                     torch.save(model.state_dict(), ('../data/event_chain_acc_%s_.model' % (best_acc)))
                 best_epoch=EPOCHES*EPO+epoch+1
@@ -170,7 +171,7 @@ if __name__ == '__main__':
     test_data=Data_data(pickle.load(open('../data/corpus_index_test_with_args_all.data','rb')))
     train_data=Data_data(pickle.load(open('../data/corpus_index_train0_with_args_all.data','rb')))
     print('train data prepare done')
-    word_id,id_vec,word_vec=get_hash_for_word('/users3/zyli/github/OpenNE/output/verb_net/1_property/deepwalk_128_unweighted_with_args.txt',verb_net3_mapping_with_args)
+    word_id,id_vec,word_vec=get_hash_for_word('../data/deepwalk_128_unweighted_with_args.txt',verb_net3_mapping_with_args)
     print('word vector prepare done')
     start=time.time()
     best_acc,best_epoch=train()
