@@ -129,6 +129,7 @@ def get_acc(scores,correct_answers,name='scores',save=False):
 if __name__ == '__main__':
     test_index=pickle.load(open('../data/test_index.pickle','rb'))
 
+    # SGNN scores1
     HIDDEN_DIM = 128
     L2_penalty=0.00001
     MARGIN=0.015
@@ -138,7 +139,7 @@ if __name__ == '__main__':
     EPOCHES=520
     PATIENTS=300
     test_data=Data_data(pickle.load(open('../data/corpus_index_test_with_args_all_chain.data','rb')))
-    word_id,id_vec,word_vec=get_hash_for_word('/users3/zyli/github/OpenNE/output/verb_net/1_property/deepwalk_128_unweighted_with_args.txt',verb_net3_mapping_with_args)
+    word_id,id_vec,word_vec=get_hash_for_word('../data/deepwalk_128_unweighted_with_args.txt',verb_net3_mapping_with_args)
     
     HIDDEN_DIM = 128*4
     L2_penalty=0.00001
@@ -158,6 +159,7 @@ if __name__ == '__main__':
     scores1=process_test(scores1,test_index)
     print (get_acc(scores1,correct_answers,'scores1'))
 
+    # event_chain PairLSTM  scores2
     HIDDEN_DIM = 128*4
     L2_penalty=0.00001
     MARGIN=0.015
@@ -175,6 +177,8 @@ if __name__ == '__main__':
     scores2=process_test(scores2,test_index)
     print (get_acc(scores2,correct_answers,'scores2'))
 
+
+    # event_comp  scores3
     scores3=pickle.load(open('../data/event_comp_test.scores','rb'),encoding='bytes')
     scores3=process_test(scores3,test_index)
     print (get_acc(scores3,correct_answers,'scores3'))
@@ -184,6 +188,8 @@ if __name__ == '__main__':
     scores2=preprocessing.scale(scores2)
     scores3=preprocessing.scale(scores3)
 
+    # 通过直接调整预测到的scores1和scores3的权重，找到使准确率最大化的权重组合。下同
+    # 对预测结果直接这么调有意义吗？
     best_acc=0. 
     best_i_j_k=(0,0)
     for i in np.arange(-3,3,0.1):
@@ -229,8 +235,16 @@ if __name__ == '__main__':
     print (best_acc,best_i_j_k)
     get_acc(scores1*best_i_j_k[0]+scores3*best_i_j_k[1]+scores2*best_i_j_k[2],correct_answers,'scores1_scores2_scores3')
     
-# SGNN 1
-# event_chain-PairLSTM 2
-# event_comp 3
-
+# SGNN scores1
+# event_chain-PairLSTM scores2
+# event_comp scores3
+'''
+52.449999999999996	scores1
+50.83			scores2
+48.64			scores3
+54.15 (0.20000000000000284, 2.100000000000005)	scores1_scores3
+52.71 (0.400000000000003, 0.10000000000000275)	scores1_scores2
+53.36 (0.10000000000000275, 0.7000000000000033)	scores2_scores3
+54.93 (2.3000000000000043, 0.30000000000000293, 0.9000000000000035)	scores1_scores2_scores3
+'''
 
