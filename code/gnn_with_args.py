@@ -184,11 +184,11 @@ class EventGraph_With_Args(Module):
         num_correct3 = torch.sum((L[:,2] == correct_answers).type(torch.FloatTensor))
         num_correct4 = torch.sum((L[:,3] == correct_answers).type(torch.FloatTensor))
         num_correct5 = torch.sum((L[:,4] == correct_answers).type(torch.FloatTensor))
-        print ("%d / %d 1st max correct: %f" % (num_correct1.data[0], len(correct_answers),num_correct1 / len(correct_answers) * 100.))
-        print ("%d / %d 2ed max correct: %f" % (num_correct2.data[0], len(correct_answers),num_correct2 / len(correct_answers) * 100.))
-        print ("%d / %d 3rd max correct: %f" % (num_correct3.data[0], len(correct_answers),num_correct3 / len(correct_answers) * 100.))
-        print ("%d / %d 4th max correct: %f" % (num_correct4.data[0], len(correct_answers),num_correct4 / len(correct_answers) * 100.))
-        print ("%d / %d 5th max correct: %f" % (num_correct5.data[0], len(correct_answers),num_correct5 / len(correct_answers) * 100.))
+        print ("%d / %d 1st max correct: %f" % (num_correct1.item(), len(correct_answers),num_correct1 / len(correct_answers) * 100.))
+        print ("%d / %d 2ed max correct: %f" % (num_correct2.item(), len(correct_answers),num_correct2 / len(correct_answers) * 100.))
+        print ("%d / %d 3rd max correct: %f" % (num_correct3.item(), len(correct_answers),num_correct3 / len(correct_answers) * 100.))
+        print ("%d / %d 4th max correct: %f" % (num_correct4.item(), len(correct_answers),num_correct4 / len(correct_answers) * 100.))
+        print ("%d / %d 5th max correct: %f" % (num_correct5.item(), len(correct_answers),num_correct5 / len(correct_answers) * 100.))
 
     def predict_with_minibatch(self,input,A,targets,dev_index,metric='euclid'):
         # input.volatile=True
@@ -259,10 +259,10 @@ def train(dev_index,word_vec,ans,train_data,dev_data,test_data,L2_penalty,MARGIN
             model.eval()
             accuracy,accuracy1,accuracy2,accuracy3,accuracy4=model.predict(Variable(data[1].data,volatile=True),data[0],data[2],dev_index,metric=METRIC)
             if (EPOCHES*EPO+epoch) % 50==0:
-                print ('Epoch %d : Eval  Acc: %f, %f, %f, %f, %f, %s' % (EPOCHES*EPO+epoch,accuracy.data[0],accuracy1.data[0],accuracy2.data[0],accuracy3.data[0],accuracy4.data[0],METRIC))
-            acc_list.append((time.time()-start,accuracy.data[0]))
-            if best_acc<accuracy.data[0]:
-                best_acc=accuracy.data[0]
+                print ('Epoch %d : Eval  Acc: %f, %f, %f, %f, %f, %s' % (EPOCHES*EPO+epoch,accuracy.data.item(),accuracy1.data.item(),accuracy2.data.item(),accuracy3.data.item(),accuracy4.data.item(),METRIC))
+            acc_list.append((time.time()-start,accuracy.item()))
+            if best_acc<accuracy.item():
+                best_acc=accuracy.item()
                 if best_acc>=52.7:
                     torch.save(model.state_dict(), ('../data/gnn_%s_acc_%s_.model' % (METRIC,best_acc)))
                 best_epoch=EPOCHES*EPO+epoch+1
