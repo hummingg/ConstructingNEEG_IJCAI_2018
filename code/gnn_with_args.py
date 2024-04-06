@@ -263,8 +263,8 @@ def train(dev_index,word_vec,ans,train_data,dev_data,test_data,L2_penalty,MARGIN
             acc_list.append((time.time()-start,accuracy.item()))
             if best_acc<accuracy.item():
                 best_acc=accuracy.item()
-                if best_acc>=52.7:
-                    torch.save(model.state_dict(), ('../data/gnn_%s_acc_%s_.model' % (METRIC,best_acc)))
+                # if best_acc>=50:
+                torch.save(model.state_dict(), ('../model/gnn_%s_acc_%s_.model' % (METRIC,best_acc)))
                 best_epoch=EPOCHES*EPO+epoch+1
                 patient=0
             else:

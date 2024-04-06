@@ -8,6 +8,9 @@
 from gnn_with_args import *
 
 class EventChain(nn.Module):
+    '''
+        PairLSTM
+    '''
     def __init__(self, embedding_dim, hidden_dim, vocab_size,word_vec,num_layers=1,bidirectional=False):
         super(EventChain, self).__init__()
         self.embedding_dim=embedding_dim
@@ -18,7 +21,8 @@ class EventChain(nn.Module):
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.embedding.weight.data = torch.from_numpy(word_vec)
         # self.embedding.weight.requires_grad=False
-        # GRU LSTM RNN
+
+        # GRU=LSTM
         self.gru = nn.GRU(self.embedding_dim, self.hidden_dim,self.num_layers,dropout=DROPOUT,bidirectional=self.bidirectional)
         self.linear_s_one=nn.Linear(hidden_dim*self.num_directions, 1,bias=False)
         self.linear_s_two=nn.Linear(hidden_dim*self.num_directions, 1,bias=True)
@@ -140,8 +144,8 @@ def train():
             acc_list.append((time.time()-start,accuracy.item()))
             if best_acc<accuracy.item():
                 best_acc=accuracy.item()
-                if best_acc>=51:
-                    torch.save(model.state_dict(), ('../data/event_chain_acc_%s_.model' % (best_acc)))
+                # if best_acc>=51:
+                torch.save(model.state_dict(), ('../model/event_chain_acc_%s_.model' % (best_acc)))
                 best_epoch=EPOCHES*EPO+epoch+1
                 patient=0
             else:
@@ -154,7 +158,8 @@ def train():
         else:
             break
     print ('Epoch %d : Best Acc: %f' % (best_epoch,best_acc))
-    pickle.dump(acc_list,open('../data/lstm_acc_list.pickle','wb'),2)
+    # GRU=LSTM
+    pickle.dump(acc_list,open('../model/lstm_acc_list.pickle','wb'),2)
     return best_acc,best_epoch
 
 HIDDEN_DIM = 128*4
