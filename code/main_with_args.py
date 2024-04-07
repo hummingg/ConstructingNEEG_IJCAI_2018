@@ -70,3 +70,8 @@ if __name__ == '__main__':
 # Attention
 # Subgraph Embedding
 # Adam
+
+'''
+Epoch 4160 : Best Acc: 52.179996
+Run time: 1766.461659 s
+'''

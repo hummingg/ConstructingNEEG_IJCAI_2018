@@ -9,7 +9,8 @@ from gnn_with_args import *
 
 class EventChain(nn.Module):
     '''
-        PairLSTM
+        PairLSTM 原本使用 LSTM
+        lzy 改成了 GRU
     '''
     def __init__(self, embedding_dim, hidden_dim, vocab_size,word_vec,num_layers=1,bidirectional=False):
         super(EventChain, self).__init__()
@@ -185,3 +186,19 @@ if __name__ == '__main__':
     with open('best_result.txt','a') as f:
         f.write('Best Acc: %f, Epoch %d , L2_penalty=%s ,MARGIN=%s ,LR=%s ,BATCH_SIZE=%s ,EPOCHES=%s ,PATIENTS=%s, HIDDEN_DIM=%s event-chain\n' % (best_acc,best_epoch,L2_penalty,MARGIN,LR,BATCH_SIZE,EPOCHES,PATIENTS,HIDDEN_DIM))
     f.close()
+
+
+'''
+all.data != all_chain.data !
+大小一样，一样能run
+
+corpus_index_dev_with_args_all.data
+Epoch 4054 : Best Acc: 51.110001
+Run time: 1779.454104 s
+Epoch 4054 : Best Acc: 51.110001
+Run time: 1782.482565 s
+
+corpus_index_dev_with_args_all_chain.data done
+Epoch 4054 : Best Acc: 51.110001
+Run time: 1786.292212 s
+'''
